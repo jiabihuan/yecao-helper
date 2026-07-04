@@ -13,10 +13,6 @@ jobs:
   build:
     name: Build Android APK
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: tv-app
 
     steps:
       - name: Checkout
@@ -26,43 +22,52 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: tv-app/package-lock.json
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '11'
           distribution: 'temurin'
-          cache: 'gradle'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           cmdline-tools-version: 11076708
           packages: |
-            platforms;android-33
-            build-tools;33.0.0
+            platforms;android-31
+            build-tools;31.0.0
             platform-tools
 
       - name: Install npm dependencies
+        working-directory: tv-app
         run: npm install --legacy-peer-deps
 
+      - name: Build web resources
+        working-directory: tv-app
+        run: npm run build
+
       - name: Grant execute permission for gradlew
-        run: chmod +x android/gradlew
+        working-directory: tv-app/android
+        run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: npm run build-apk-debug
+        working-directory: tv-app/android
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Build Release APK
-        run: npm run build-apk-release
+        working-directory: tv-app/android
+        run: ./gradlew assembleRelease --stacktrace
         continue-on-error: true
 
       - name: Find APK files
         id: find_apk
         run: |
-          echo "apk_debug=$(find android/app/build/outputs/apk -name "*debug*.apk" | head -1)" >> $GITHUB_OUTPUT
-          echo "apk_release=$(find android/app/build/outputs/apk -name "*release*.apk" | head -1)" >> $GITHUB_OUTPUT
+          DEBUG_APK=$(find tv-app/android/app/build/outputs/apk -name "*debug*.apk" | head -1)
+          RELEASE_APK=$(find tv-app/android/app/build/outputs/apk -name "*release*.apk" | head -1)
+          echo "apk_debug=$DEBUG_APK" >> $GITHUB_OUTPUT
+          echo "apk_release=$RELEASE_APK" >> $GITHUB_OUTPUT
+          echo "Debug APK: $DEBUG_APK"
+          echo "Release APK: $RELEASE_APK"
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4

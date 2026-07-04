@@ -44,8 +44,10 @@ const upload = multer({
 });
 
 app.post('/api/upload', (req, res) => {
+  console.log('收到上传请求');
   upload.single('file')(req, res, (err) => {
     if (err) {
+      console.error('上传错误:', err);
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: `文件大小超过限制（最大 ${MAX_FILE_SIZE / 1024 / 1024}MB）` });
       }
@@ -53,8 +55,11 @@ app.post('/api/upload', (req, res) => {
     }
     
     if (!req.file) {
+      console.log('没有文件');
       return res.status(400).json({ error: '请选择要上传的文件' });
     }
+    
+    console.log('文件上传成功:', req.file.originalname, req.file.size);
     
     try {
       const fileInfo = addFile(
@@ -64,6 +69,8 @@ app.post('/api/upload', (req, res) => {
         req.file.mimetype,
         EXPIRE_DAYS
       );
+      
+      console.log('生成口令:', fileInfo.code);
       
       res.json({
         success: true,
@@ -75,7 +82,7 @@ app.post('/api/upload', (req, res) => {
         expire_days: EXPIRE_DAYS
       });
     } catch (e) {
-      console.error('Upload error:', e);
+      console.error('保存文件信息错误:', e);
       res.status(500).json({ error: '上传失败，请重试' });
     }
   });
