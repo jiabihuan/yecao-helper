@@ -1,0 +1,296 @@
+<template>
+  <qt-view class="search-keyword">
+    <!-- 暂无数据 -->
+    <qt-view v-if="isEmpty" class="search-keyword-empty" :focusable="false">
+      <qt-text class="search-keyword-empty-text" text="抱歉暂无相关内容" gravity="center" :focusable="false"></qt-text>
+      <qt-text class="search-keyword-empty-text" text="为您推荐右边热门影片～" gravity="center" :focusable="false"></qt-text>
+    </qt-view>
+    <qt-view v-else>
+      <!-- 清空按钮 -->
+      <qt-view class="search-keyword-clear-btn" name="clearBtn" v-if="showClearBtn" :focusable="true" @click="onClearBtnClick">
+        <qt-view class="search-keyword-clear-btn-img" :focusable="false" :duplicateParentState="true">
+          <qt-image
+            class="search-keyword-clear-btn-img"
+            style="position: absolute"
+            :showOnState="['normal', 'selected']"
+            :src="icClearDark"
+            :focusable="false"
+            :duplicateParentState="true"
+          ></qt-image>
+          <qt-image
+            class="search-keyword-clear-btn-img"
+            style="position: absolute"
+            showOnState="focused"
+            :src="icClearFocused"
+            :focusable="false"
+            :duplicateParentState="true"
+          ></qt-image>
+        </qt-view>
+        <qt-text
+          class="search-keyword-clear-btn-text"
+          text="清空"
+          gravity="center"
+          :focusable="false"
+          :duplicateParentState="true"
+        ></qt-text>
+      </qt-view>
+      <!-- 搜索词条 -->
+      <qt-list-view
+        class="search-keyword-list"
+        ref="listRef"
+        name="keywordList"
+        :padding="'0,55,0,0'"
+        :scrollYGreaterReferenceValue="84"
+        :scrollYLesserReferenceValue="84"
+        :triggerTask="triggerTask"
+        :singleSelectPosition="singleSelectPos"
+        :blockFocusDirections="['down']"
+        :nextFocusRightSID="focusRightSid"
+        :openPage="true"
+        :listenBoundEvent="true"
+        :loadMore="onListLoadMore"
+        @item-focused="onListItemFocused"
+      >
+        <!-- 标题 -->
+        <qt-view :type="KeywordType.TITLE" class="search-keyword-list-item-title" :focusable="false" eventFocus eventClick>
+          <qt-text
+            class="search-keyword-list-item-title-text"
+            text="${text}"
+            gravity="center|start"
+            typeface="bold"
+            :focusable="false"
+          ></qt-text>
+        </qt-view>
+        <!-- 普通文本 -->
+        <qt-view :type="KeywordType.TEXT" class="search-keyword-list-item" :focusable="true" eventFocus eventClick>
+          <qt-view class="search-keyword-list-item-dot" gradientBackground="${gradientBackground}"></qt-view>
+          <qt-text
+            class="search-keyword-list-item-text"
+            flexStyle="${flexStyle}"
+            autoHeight
+            text="${text}"
+            gravity="center|start"
+            :showOnState="'normal'"
+            :lines="1"
+            :ellipsizeMode="2"
+            :focusable="false"
+            :duplicateParentState="true"
+          ></qt-text>
+          <qt-text
+            class="search-keyword-list-item-text"
+            flexStyle="${flexStyle}"
+            autoHeight
+            text="${text}"
+            typeface="bold"
+            gravity="center|start"
+            :horizontalFadingEdgeEnabled="true"
+            :showOnState="['focused', 'selected']"
+            :lines="1"
+            :ellipsizeMode="3"
+            :focusable="false"
+            :duplicateParentState="true"
+          ></qt-text>
+        </qt-view>
+      </qt-list-view>
+    </qt-view>
+  </qt-view>
+</template>
+
+<script setup lang="ts">
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { QTIListView, QTListViewItem } from '@quicktvui/quicktvui3'
+import { buildKeywords } from '../adapter/index'
+import { KeywordType } from '../adapter/interface'
+import icClearDark from '../../../assets/search/ic_clear_dark.png'
+import icClearFocused from '../../../assets/search/ic_clear_focused.png'
+import searchManager from '../api/index'
+import config from '../config'
+
+const props = defineProps({
+  inputText: {
+    type: String,
+    default: ''
+  }
+})
+const emits = defineEmits(['setLoading', 'updateFocusName', 'updateFocusDeny', 'updateKeyword'])
+// 页面引用
+const mode = ref<'hot' | 'guess' | 'all'>('hot')
+const showClearBtn = ref<boolean>(false)
+const listRef = ref<QTIListView>()
+const singleSelectPos = ref<number>(1)
+const focusRightSid = ref<string>('')
+const isEmpty = ref<boolean>(false)
+// 控制清空按钮是否展示
+const triggerTask = [
+  {
+    event: 'onScrollYGreater',
+    target: 'clearBtn',
+    function: 'changeAlpha',
+    params: [0]
+  },
+  {
+    event: 'onScrollYLesser',
+    target: 'clearBtn',
+    function: 'changeAlpha',
+    params: [1]
+  }
+]
+// 局部变量
+let curPage = 0
+let pageSize = config.listKeywordsLimit
+let historyLength = 0
+// 最后焦点位置
+let lastFocusPos = singleSelectPos.value
+// 组件绑定数据
+let listData: QTListViewItem[] = []
+let watchTimer: any = -1
+let loadTimer: any = -1
+let listFocusTimer: any = -1
+
+onMounted(() => {
+  // 监听事件
+  qt.eventBus.on('updateFocusRightSid', (sid: string) => {
+    focusRightSid.value = sid
+  })
+  // 加载数据
+  loadSuggestions()
+})
+
+onUnmounted(() => {
+  qt.eventBus.off('updateFocusRightSid')
+})
+
+watch(
+  () => props.inputText,
+  () => {
+    mode.value = props.inputText.length > 0 ? 'guess' : 'hot'
+    // 状态重置
+    isEmpty.value = false
+    lastFocusPos = singleSelectPos.value
+    curPage = 0
+    // 加载词条
+    clearTimeout(watchTimer)
+    watchTimer = setTimeout(() => {
+      loadSuggestions()
+    }, 300)
+  }
+)
+
+async function loadSuggestions(page = 1) {
+  try {
+    // 搜索词条
+    const suggestions = await searchManager.getSuggestions(mode.value, props.inputText, page, pageSize)
+    const keywords = buildKeywords(suggestions, mode.value, page)
+
+    if (page === 1) {
+      resetAndInitialize(
+        keywords,
+        suggestions.searchHistory?.map((item) => ({ keyword: item }))
+      )
+    } else {
+      if (keywords.length > 0) {
+        listData.push(...keywords)
+      } else {
+        listRef.value?.stopPage()
+      }
+    }
+  } catch (error) {
+    qt.log.e('ok->', 'Error loading suggestions:', error)
+  } finally {
+    emits('setLoading', false)
+  }
+}
+
+function resetAndInitialize(keywords, history) {
+  curPage = 1
+
+  // 添加标题
+  keywords.unshift({ type: KeywordType.TITLE, text: mode.value === 'hot' ? '热门搜索' : '猜你想搜' })
+
+  // 搜索历史
+  if (history.length > 0) {
+    let historyData = [{ type: KeywordType.TITLE, text: '搜索历史', showClearBtn: true }]
+    historyData.push(
+      ...history.slice(0, 6).map((item) => ({
+        type: KeywordType.TEXT,
+        text: item.keyword,
+        flexStyle: { marginLeft: 80 }
+      }))
+    )
+
+    // 记录历史条数
+    historyLength = historyData.length
+
+    // 添加搜索历史
+    keywords.unshift(...historyData)
+  }
+
+  listData = listRef.value?.init(keywords) || []
+  listRef.value?.scrollToTop()
+  listRef.value?.setItemSelected(singleSelectPos.value, true)
+  showClearBtn.value = history.length > 0
+  isEmpty.value = listData.length === 1
+
+  clearTimeout(loadTimer)
+  loadTimer = setTimeout(() => {
+    emits('updateKeyword', listData.length > 1 ? listData[1].text : '')
+  }, 300)
+}
+
+function onListLoadMore() {
+  // 第一页通过 onMounted 生命周期触发
+  if (curPage > 0) {
+    loadSuggestions(++curPage)
+  }
+}
+
+function onListItemFocused(evt) {
+  // 不处理标题的焦点事件
+  if (evt.item.type === KeywordType.TITLE) {
+    return
+  }
+
+  if (evt.isFocused) {
+    emits('updateFocusName', 'searchKeyword')
+
+    clearTimeout(listFocusTimer)
+    listFocusTimer = setTimeout(() => {
+      if (evt.position != lastFocusPos) {
+        lastFocusPos = evt.position
+
+        // 设置向右焦点位置
+        focusRightSid.value = '--search-grid-first-item--'
+
+        emits('updateKeyword', evt.item.text)
+      } else {
+        emits('updateFocusDeny', false)
+      }
+    }, 300)
+  }
+}
+
+let clearBtnTimer: any = -1
+function onClearBtnClick() {
+  emits('setLoading', true, true)
+
+  clearTimeout(clearBtnTimer)
+  setTimeout(() => {
+    showClearBtn.value = false
+    // 清空搜索历史
+    searchManager.clearHistory()
+    // 清空本地历史
+    listData.splice(0, historyLength)
+    lastFocusPos = 0
+    // 重新设置焦点
+    listRef.value?.setItemFocused(1)
+  }, 300)
+}
+
+function onBackPressed() {
+  listRef.value?.setItemFocused(lastFocusPos)
+}
+
+defineExpose({ onBackPressed })
+</script>
+
+<style scoped lang="scss" src="../scss/search-keyword.scss"></style>

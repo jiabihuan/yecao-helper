@@ -1,0 +1,15 @@
+@use './base.scss' as *;
+.no-title-item-root-css{
+  position: absolute;
+  background-color: transparent;
+  overflow: hidden;
+  flex-direction: row-reverse;
+}
+
+.no-title-item-img{
+  background-color: transparent;
+  z-index: 899;
+  position: absolute;
+  border-radius: $theme-img-border;
+}
+

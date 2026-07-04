@@ -1,0 +1,23 @@
+node_modules/
+dist/
+build/
+*.log
+.DS_Store
+.env
+data.db
+data.json
+uploads/*
+!uploads/.gitkeep
+
+# TV 端
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+*.apk
+*.rpk
+
+# IDE
+.idea/
+.vscode/
+*.iml

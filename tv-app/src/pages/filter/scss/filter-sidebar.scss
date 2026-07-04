@@ -1,0 +1,45 @@
+.filter-sidebar {
+  width: 340px;
+  height: 960px;
+  background-color: transparent;
+}
+
+.filter-sidebar-list {
+  width: 340px;
+  height: 960px;
+  background-color: transparent;
+}
+
+.filter-sidebar-list-item {
+  width: 340px;
+  height: 106px;
+  background-color: transparent;
+  border-radius: 8px;
+  padding-right: 80px;
+  focus-background-color: $theme-btn-focus-color;
+}
+
+.filter-sidebar-list-item-img {
+  width: 34px;
+  height: 34px;
+  background-color: transparent;
+  margin-right: 16px;
+}
+
+.filter-sidebar-list-item-text {
+  position: absolute;
+  width: 260px;
+  height: 106px;
+  background-color: transparent;
+  color: $theme-text-normal-color;
+  font-size: 36px;
+  focus-color: $theme-text-focus-color;
+  select-color: $theme-text-select-color;
+}
+
+.filter-sidebar-list-item-line {
+  width: 140px;
+  height: 2px;
+  background-color: #868686;
+  margin-left: 80px;
+}
