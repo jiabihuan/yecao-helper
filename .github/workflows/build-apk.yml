@@ -1,0 +1,88 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: tv-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: tv-app/package-lock.json
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 11076708
+          packages: |
+            platforms;android-33
+            build-tools;33.0.0
+            platform-tools
+
+      - name: Install npm dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build Debug APK
+        run: npm run build-apk-debug
+
+      - name: Build Release APK
+        run: npm run build-apk-release
+        continue-on-error: true
+
+      - name: Find APK files
+        id: find_apk
+        run: |
+          echo "apk_debug=$(find android/app/build/outputs/apk -name "*debug*.apk" | head -1)" >> $GITHUB_OUTPUT
+          echo "apk_release=$(find android/app/build/outputs/apk -name "*release*.apk" | head -1)" >> $GITHUB_OUTPUT
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: yecao-helper-debug
+          path: ${{ steps.find_apk.outputs.apk_debug }}
+          if-no-files-found: warn
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: yecao-helper-release
+          path: ${{ steps.find_apk.outputs.apk_release }}
+          if-no-files-found: warn
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ steps.find_apk.outputs.apk_debug }}
+            ${{ steps.find_apk.outputs.apk_release }}
+          generate_release_notes: true
