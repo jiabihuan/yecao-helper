@@ -51,6 +51,115 @@
             font-size: 14px;
         }
 
+        .user-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .user-info strong {
+            color: #667eea;
+        }
+
+        .logout-btn {
+            padding: 6px 14px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+        }
+
         .upload-area {
             border: 2px dashed #667eea;
             border-radius: 12px;
@@ -267,6 +376,76 @@
         .upload-new-btn:hover {
             background: rgba(255, 255, 255, 0.15);
         }
+
+        .my-files-section {
+            margin-top: 25px;
+        }
+
+        .my-files-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .my-files-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-item-name {
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-item-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .file-item-code {
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: bold;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .file-item-delete {
+            padding: 4px 10px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -277,42 +456,97 @@
             <p class="subtitle">APK 口令分享 · 电视安装更简单</p>
         </div>
 
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📦</div>
-            <div class="upload-text">点击或拖拽 APK 文件到此处</div>
-            <div class="upload-hint">最大支持 400MB · 文件保留 7 天</div>
-        </div>
-        <input type="file" id="fileInput" accept=".apk">
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div class="loading-text">正在上传并生成口令...</div>
-        </div>
-
-        <div class="error" id="error"></div>
-
-        <div class="result" id="result">
-            <div class="result-title">上传成功！请使用以下口令在电视上安装：</div>
-            <div class="code-display">
-                <div class="code-label">分享口令</div>
-                <div class="code" id="codeDisplay">----</div>
+        <div id="authSection">
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">登录</div>
+                <div class="auth-tab" data-tab="register">注册</div>
             </div>
-            <div class="file-info">
-                <div>
-                    <span>文件名</span>
-                    <span id="fileName">-</span>
+
+            <div id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名">
                 </div>
-                <div>
-                    <span>文件大小</span>
-                    <span id="fileSize">-</span>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码">
                 </div>
-                <div>
-                    <span>过期时间</span>
-                    <span id="expireTime">-</span>
+                <button class="submit-btn" onclick="doLogin()">登录</button>
+            </div>
+
+            <div id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="regUsername" placeholder="3-20位字符">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="regPassword" placeholder="至少6位">
+                </div>
+                <div class="form-group">
+                    <label>邀请码</label>
+                    <input type="text" id="regInviteCode" placeholder="请输入邀请码">
+                </div>
+                <button class="submit-btn" onclick="doRegister()">注册</button>
+            </div>
+        </div>
+
+        <div id="mainSection" style="display: none;">
+            <div class="user-bar">
+                <div class="user-info">
+                    👤 <strong id="usernameDisplay">-</strong>
+                    <span style="margin-left: 10px;">已上传 <span id="uploadCount">0</span>/<span id="maxUploads">50</span></span>
+                </div>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📦</div>
+                <div class="upload-text">点击或拖拽 APK 文件到此处</div>
+                <div class="upload-hint" id="uploadHint">最大支持 100MB · 文件保留 7 天</div>
+            </div>
+            <input type="file" id="fileInput" accept=".apk">
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">正在上传并生成口令...</div>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+                <div class="result-title">上传成功！请使用以下口令在电视上安装：</div>
+                <div class="code-display">
+                    <div class="code-label">分享口令</div>
+                    <div class="code" id="codeDisplay">----</div>
+                </div>
+                <div class="file-info">
+                    <div>
+                        <span>文件名</span>
+                        <span id="fileName">-</span>
+                    </div>
+                    <div>
+                        <span>文件大小</span>
+                        <span id="fileSize">-</span>
+                    </div>
+                    <div>
+                        <span>过期时间</span>
+                        <span id="expireTime">-</span>
+                    </div>
+                </div>
+                <button class="copy-btn" id="copyBtn">复制口令</button>
+                <button class="upload-new-btn" id="uploadNewBtn">上传新文件</button>
+            </div>
+
+            <div class="my-files-section">
+                <div class="my-files-title">
+                    <span>我的上传</span>
+                    <span style="font-size: 12px; color: #999; font-weight: normal;">点击口令复制</span>
+                </div>
+                <div class="my-files-list" id="myFilesList">
+                    <div style="text-align: center; color: #999; padding: 20px;">暂无上传记录</div>
                 </div>
             </div>
-            <button class="copy-btn" id="copyBtn">复制口令</button>
-            <button class="upload-new-btn" id="uploadNewBtn">上传新文件</button>
         </div>
 
         <div class="tips">
@@ -331,6 +565,125 @@
     </div>
 
     <script>
+        let token = localStorage.getItem('yecao_token') || '';
+        let currentUser = null;
+
+        function api(path, options = {}) {
+            const headers = options.headers || {};
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return fetch('/api' + path, { ...options, headers }).then(r => r.json());
+        }
+
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Form').classList.add('active');
+            });
+        });
+
+        function doLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showError('请输入用户名和密码');
+                return;
+            }
+            
+            hideError();
+            api('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            }).then(data => {
+                if (data.success) {
+                    token = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('yecao_token', token);
+                    showMain();
+                    loadMyFiles();
+                } else {
+                    showError(data.error);
+                }
+            });
+        }
+
+        function doRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const inviteCode = document.getElementById('regInviteCode').value.trim();
+            
+            if (!username || !password || !inviteCode) {
+                showError('请填写完整信息');
+                return;
+            }
+            
+            hideError();
+            api('/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, invite_code: inviteCode })
+            }).then(data => {
+                if (data.success) {
+                    token = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('yecao_token', token);
+                    showMain();
+                    loadMyFiles();
+                } else {
+                    showError(data.error);
+                }
+            });
+        }
+
+        function logout() {
+            token = '';
+            currentUser = null;
+            localStorage.removeItem('yecao_token');
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainSection').style.display = 'none';
+        }
+
+        function showMain() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainSection').style.display = 'block';
+            document.getElementById('usernameDisplay').textContent = currentUser.username;
+            document.getElementById('maxUploads').textContent = currentUser.max_uploads;
+            document.getElementById('uploadHint').textContent = `最大支持 ${currentUser.max_file_size_mb}MB · 文件保留 7 天`;
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error');
+            el.textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        function hideError() {
+            document.getElementById('error').classList.remove('show');
+        }
+
+        function checkAuth() {
+            if (!token) return;
+            api('/auth/me').then(data => {
+                if (data.success) {
+                    currentUser = data.user;
+                    showMain();
+                    loadMyFiles();
+                } else {
+                    token = '';
+                    localStorage.removeItem('yecao_token');
+                }
+            }).catch(() => {
+                token = '';
+                localStorage.removeItem('yecao_token');
+            });
+        }
+
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const loading = document.getElementById('loading');
@@ -374,7 +727,6 @@
                 showError('请选择 APK 文件');
                 return;
             }
-
             uploadFile(file);
         }
 
@@ -387,15 +739,15 @@
             const formData = new FormData();
             formData.append('file', file);
 
-            fetch('/api/upload', {
+            api('/upload', {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
             .then(data => {
                 loading.classList.remove('show');
                 if (data.success) {
                     showResult(data);
+                    loadMyFiles();
                 } else {
                     showError(data.error || '上传失败');
                     uploadArea.style.display = 'block';
@@ -416,18 +768,6 @@
             resultDiv.classList.add('show');
             copyBtn.textContent = '复制口令';
             copyBtn.classList.remove('copied');
-        }
-
-        function showError(msg) {
-            errorDiv.textContent = msg;
-            errorDiv.classList.add('show');
-            setTimeout(() => {
-                errorDiv.classList.remove('show');
-            }, 5000);
-        }
-
-        function hideError() {
-            errorDiv.classList.remove('show');
         }
 
         function formatSize(bytes) {
@@ -458,6 +798,48 @@
             uploadArea.style.display = 'block';
             fileInput.value = '';
         });
+
+        function loadMyFiles() {
+            api('/my-files').then(data => {
+                if (data.success) {
+                    const list = document.getElementById('myFilesList');
+                    document.getElementById('uploadCount').textContent = data.files.length;
+                    if (data.files.length === 0) {
+                        list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">暂无上传记录</div>';
+                        return;
+                    }
+                    list.innerHTML = data.files.map(f => `
+                        <div class="file-item">
+                            <div class="file-item-info">
+                                <div class="file-item-name">${f.original_name}</div>
+                                <div class="file-item-meta">${formatSize(f.size)} · ${formatDate(f.upload_time)} · ${f.download_count || 0}次下载</div>
+                            </div>
+                            <div class="file-item-code" onclick="copyCode('${f.code}')" title="点击复制">${f.code}</div>
+                            <button class="file-item-delete" onclick="deleteFile('${f.id}')">删除</button>
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert('口令已复制: ' + code);
+            });
+        }
+
+        function deleteFile(id) {
+            if (!confirm('确定要删除这个文件吗？')) return;
+            api('/files/' + id, { method: 'DELETE' }).then(data => {
+                if (data.success) {
+                    loadMyFiles();
+                } else {
+                    alert('删除失败: ' + (data.error || '未知错误'));
+                }
+            });
+        }
+
+        checkAuth();
     </script>
 </body>
 </html>
