@@ -70,7 +70,7 @@
                     android:hint="@string/hint_server"
                     android:textSize="24sp"
                     android:textColor="@color/text_primary"
-                    android:hintTextColor="@color/text_hint"
+                    android:textColorHint="@color/text_hint"
                     android:background="@drawable/keyboard_key"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"

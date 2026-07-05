@@ -3,181 +3,106 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/primary"
+    android:background="#0f172a"
     android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_remote"
-        style="@style/TextTitle" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/subtitle_remote"
-        style="@style/TextSubtitle"
-        android:layout_marginTop="10dp" />
+        android:text="远程推送"
+        android:textSize="48sp"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp">
+        android:layout_marginTop="50dp">
 
         <LinearLayout
-            android:layout_width="550dp"
-            android:layout_height="wrap_content"
+            android:layout_width="500dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
-            android:gravity="center"
-            style="@style/PushCard">
+            android:background="#1e293b"
+            android:padding="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💻"
-                android:textSize="72sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/method_computer"
+                android:text="📱 手机推送"
                 android:textSize="32sp"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold"
-                android:layout_marginTop="25dp" />
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/desc_computer"
+                android:text="打开浏览器访问"
                 android:textSize="24sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="15dp" />
+                android:textColor="#94a3b8"
+                android:layout_marginTop="20dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="@drawable/btn_primary"
-                android:gravity="center"
-                android:layout_marginTop="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/url_computer"
-                    android:textSize="28sp"
-                    android:textColor="@color/text_primary" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvPhoneCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="28sp"
+                android:textColor="#6366f1"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="请确保电脑与电视连接在同一网络"
+                android:text="扫描二维码或输入地址"
                 android:textSize="22sp"
-                android:textColor="@color/text_hint"
-                android:layout_marginTop="15dp" />
+                android:textColor="#64748b"
+                android:layout_marginTop="30dp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="550dp"
-            android:layout_height="wrap_content"
+            android:layout_width="500dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
-            android:gravity="center"
-            style="@style/PushCard"
-            android:layout_marginLeft="50dp">
+            android:background="#1e293b"
+            android:padding="40dp"
+            android:layout_marginLeft="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📱"
-                android:textSize="72sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/method_phone"
+                android:text="💻 电脑推送"
                 android:textSize="32sp"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold"
-                android:layout_marginTop="25dp" />
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/desc_phone"
+                android:text="打开浏览器访问"
                 android:textSize="24sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="15dp" />
+                android:textColor="#94a3b8"
+                android:layout_marginTop="20dp" />
 
-            <LinearLayout
-                android:layout_width="240dp"
-                android:layout_height="240dp"
-                android:background="#ffffff"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="15dp"
-                android:layout_marginTop="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□□□□□□□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□■□■□■□■"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□□□□□□□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□■■□□■■□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□□□□□□□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□■□□□■□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□□□□□□□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="□□□□□□□□"
-                    android:textSize="28sp"
-                    android:textColor="#000000" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvComputerCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="28sp"
+                android:textColor="#6366f1"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="扫码后选择应用即可远程安装"
+                android:text="输入地址后上传APK文件"
                 android:textSize="22sp"
-                android:textColor="@color/text_hint"
-                android:layout_marginTop="15dp" />
+                android:textColor="#64748b"
+                android:layout_marginTop="30dp" />
         </LinearLayout>
     </LinearLayout>
 

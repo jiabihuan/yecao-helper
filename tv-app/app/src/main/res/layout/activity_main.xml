@@ -3,63 +3,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/primary">
+    android:background="#0f172a">
 
     <LinearLayout
-        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal"
-        android:background="@color/header_bg"
+        android:background="#1e293b"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <LinearLayout
-            android:layout_width="200dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="✨"
-                android:textSize="36sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="32sp"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp" />
-        </LinearLayout>
+            android:text="✨ 星河助手"
+            android:textSize="32sp"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/navContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:gravity="right">
+            android:layout_marginLeft="40dp">
 
             <Button
-                android:id="@+id/btnSettings"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="⚙️"
-                android:textSize="28sp"
-                android:background="@drawable/nav_item_bg"
-                android:textColor="@color/text_primary" />
+                android:id="@+id/btnInstall"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:text="口令安装"
+                android:textSize="26sp"
+                android:textColor="#ffffff"
+                android:background="#6366f1"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnRemote"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:text="远程推送"
+                android:textSize="26sp"
+                android:textColor="#94a3b8"
+                android:background="#334155"
+                android:layout_marginLeft="20dp" />
+
+            <Button
+                android:id="@+id/btnManager"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:text="应用管理"
+                android:textSize="26sp"
+                android:textColor="#94a3b8"
+                android:background="#334155"
+                android:layout_marginLeft="20dp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="⚙️"
+            android:textSize="28sp"
+            android:background="#334155" />
     </LinearLayout>
 
     <FrameLayout

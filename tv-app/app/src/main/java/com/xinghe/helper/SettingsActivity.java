@@ -1,18 +1,15 @@
 package com.xinghe.helper;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Activity implements View.OnClickListener {
 
     private EditText etServer;
-    private Button btnSave;
-    private Button btnBack;
+    private Button btnSave, btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,27 +20,16 @@ public class SettingsActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
 
-        loadServerUrl();
+        btnBack.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
+    }
 
-        btnBack.setOnClickListener(v -> finish());
-
-        btnSave.setOnClickListener(v -> {
-            saveServerUrl();
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnBack) {
             finish();
-        });
-    }
-
-    private void loadServerUrl() {
-        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-        String url = prefs.getString("server_url", "");
-        etServer.setText(url);
-    }
-
-    private void saveServerUrl() {
-        String url = etServer.getText().toString().trim();
-        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("server_url", url);
-        editor.apply();
+        } else if (v.getId() == R.id.btnSave) {
+            finish();
+        }
     }
 }
