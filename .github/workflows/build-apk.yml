@@ -19,6 +19,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.5
+
       - name: Install Android SDK
         run: |
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/sdk.zip
@@ -29,22 +34,19 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Grant execute permission for gradlew
-        working-directory: tv-app
-        run: chmod +x gradlew
-
       - name: Build Debug APK
         working-directory: tv-app
         run: |
-          ./gradlew assembleDebug --stacktrace 2>&1 || true
-          echo "=== GRADLE ERRORS ==="
-          cat /home/runner/.gradle/logs/gradle.log 2>/dev/null || echo "No gradle.log found"
-          echo "=== BUILD OUTPUT ==="
-          find . -name "build.log" -type f -exec cat {} \; 2>/dev/null || echo "No build.log found"
+          export ANDROID_HOME=/tmp/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+          gradle assembleDebug
 
       - name: Build Release APK
         working-directory: tv-app
-        run: ./gradlew assembleRelease --stacktrace
+        run: |
+          export ANDROID_HOME=/tmp/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+          gradle assembleRelease
         continue-on-error: true
 
       - name: Find APK files
