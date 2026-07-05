@@ -27,24 +27,34 @@ jobs:
           gradle-version: 8.5
 
       - name: Build APK
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         run: |
           cd tv-app
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          echo "=== SDK path ==="
-          echo "$ANDROID_SDK_ROOT"
-          ls "$ANDROID_SDK_ROOT" || true
-          echo "=== Build ==="
-          gradle assembleDebug --no-daemon --stacktrace 2>&1
-          echo "=== Exit: $? ==="
-          find . -name "*.apk" -type f || echo "No APK found"
-        continue-on-error: true
+          gradle assembleDebug --no-daemon
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: 星河助手
           path: tv-app/app/build/outputs/apk/debug/*.apk
+
+      - name: Upload to Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          name: 星河助手 - 最新版本
+          artifacts: "tv-app/app/build/outputs/apk/debug/*.apk"
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ## 星河助手
+            
+            纯原生Android TV应用，无需网络即可使用
+            
+            ### 功能
+            - 🔐 口令安装：输入6位口令快速安装应用
+            - 📡 远程推送：通过电脑或手机推送应用到电视
+            - 📱 应用管理：管理已安装的应用
+            
+            ### 安装说明
+            下载 APK 文件，通过 U 盘或文件管理器安装到电视/盒子
