@@ -37,7 +37,6 @@ jobs:
           mkdir -p build/intermediates/classes
           mkdir -p build/intermediates/dex
           mkdir -p build/intermediates/unzipped
-          mkdir -p build/outputs/apk/debug
           
           aapt2 compile --dir app/src/main/res -o build/intermediates/aapt2/res.zip
           aapt2 link -o build/intermediates/apk/app.apk --manifest app/src/main/AndroidManifest.xml -I $ANDROID_HOME/platforms/android-34/android.jar --java build/generated/source/r/debug -R build/intermediates/aapt2/res.zip --auto-add-overlay
@@ -53,6 +52,7 @@ jobs:
           zip -r ../app-final.apk .
           cd ../..
           
+          mkdir -p build/outputs/apk/debug
           cp build/intermediates/app-final.apk build/outputs/apk/debug/星河助手.apk
           zipalign -f 4 build/outputs/apk/debug/星河助手.apk build/outputs/apk/debug/星河助手-aligned.apk
           mv build/outputs/apk/debug/星河助手-aligned.apk build/outputs/apk/debug/星河助手.apk
