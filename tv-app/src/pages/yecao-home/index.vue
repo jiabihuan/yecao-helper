@@ -49,20 +49,6 @@ const menuItems = ref([
     path: '/yecao-code'
   },
   {
-    id: 'usb',
-    icon: '💾',
-    title: 'U盘安装',
-    desc: '通过U盘安装本地APK',
-    path: '/yecao-usb'
-  },
-  {
-    id: 'manager',
-    icon: '📱',
-    title: '应用管理',
-    desc: '查看和管理已安装应用',
-    path: '/yecao-manager'
-  },
-  {
     id: 'settings',
     icon: '⚙️',
     title: '设置',

@@ -3,6 +3,11 @@ import home from './pages/yecao-home/index.vue'
 
 const routes = [
   {
+    path: '/',
+    name: 'home',
+    component: home
+  },
+  {
     path: '/home',
     name: 'home',
     component: home
@@ -23,9 +28,9 @@ const routes = [
     component: () => import('./pages/yecao-settings/index.vue')
   },
   {
-    path: '/device_info',
-    name: 'device_info',
-    component: () => import('./pages/device-info/index.vue')
+    path: '/error',
+    name: 'error',
+    component: home
   }
 ]
 
