@@ -35,7 +35,12 @@ jobs:
 
       - name: Build Debug APK
         working-directory: tv-app
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          ./gradlew assembleDebug --stacktrace 2>&1 || true
+          echo "=== GRADLE ERRORS ==="
+          cat /home/runner/.gradle/logs/gradle.log 2>/dev/null || echo "No gradle.log found"
+          echo "=== BUILD OUTPUT ==="
+          find . -name "build.log" -type f -exec cat {} \; 2>/dev/null || echo "No build.log found"
 
       - name: Build Release APK
         working-directory: tv-app
