@@ -26,8 +26,12 @@ jobs:
 
       - name: Build APK (manual)
         run: |
+          set -x
           PROJECT_DIR=tv-app
           cd $PROJECT_DIR
+          
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           
           mkdir -p build/intermediates/aapt2
           mkdir -p build/intermediates/apk
