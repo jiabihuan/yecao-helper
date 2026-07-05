@@ -1,29 +1,37 @@
 <template>
-  <div class="yecao-home-root" :gradientBackground="{ colors: bgColors, orientation: 0 }">
-    <div class="yecao-home-header">
-      <qt-text class="yecao-home-logo" text="🌿" gravity="center" :fontSize="80" />
-      <qt-text class="yecao-home-title" text="星河助手" gravity="center" :fontSize="48" typeface="bold" />
-      <qt-text class="yecao-home-subtitle" text="大屏应用安装专家" gravity="center" :fontSize="28" />
-    </div>
-
-    <div class="yecao-home-menu">
-      <div
-        v-for="(item, index) in menuItems"
-        :key="index"
-        class="yecao-menu-item"
-        :focusable="true"
-        :focusScale="1.05"
-        @click="onMenuClick(item)"
-        :nextFocusUp="index < 2 ? '' : ''"
-      >
-        <qt-text class="yecao-menu-icon" :text="item.icon" gravity="center" :fontSize="56" />
-        <qt-text class="yecao-menu-title" :text="item.title" gravity="center" :fontSize="32" typeface="bold" />
-        <qt-text class="yecao-menu-desc" :text="item.desc" gravity="center" :fontSize="24" />
+  <div class="home-root">
+    <div class="home-container">
+      <div class="home-logo">
+        <qt-text text="✨" gravity="center" :fontSize="80" />
       </div>
-    </div>
-
-    <div class="yecao-home-footer">
-      <qt-text class="yecao-home-version" :text="'版本 ' + version" gravity="center" :fontSize="22" />
+      <qt-text class="home-title" text="星河助手" gravity="center" :fontSize="48" typeface="bold" />
+      <qt-text class="home-subtitle" text="大屏应用安装专家" gravity="center" :fontSize="26" />
+      
+      <div class="home-menu">
+        <div
+          class="menu-item"
+          :focusable="true"
+          :focusScale="1.05"
+          @click="goCode"
+        >
+          <qt-text text="🔑" gravity="center" :fontSize="56" />
+          <qt-text class="menu-title" text="口令安装" gravity="center" :fontSize="32" typeface="bold" />
+          <qt-text class="menu-desc" text="输入4位口令快速安装应用" gravity="center" :fontSize="22" />
+        </div>
+        
+        <div
+          class="menu-item"
+          :focusable="true"
+          :focusScale="1.05"
+          @click="goSettings"
+        >
+          <qt-text text="⚙️" gravity="center" :fontSize="56" />
+          <qt-text class="menu-title" text="设置" gravity="center" :fontSize="32" typeface="bold" />
+          <qt-text class="menu-desc" text="服务器地址配置" gravity="center" :fontSize="22" />
+        </div>
+      </div>
+      
+      <qt-text class="home-version" :text="'版本 ' + version" gravity="center" :fontSize="20" />
     </div>
   </div>
 </template>
@@ -31,36 +39,18 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useESRouter } from '@extscreen/es3-router'
-import ThemeConfig from '../../config/theme-config'
 
 defineOptions({ name: 'yecao-home' })
 
 const router = useESRouter()
 const version = '1.0.0'
 
-const bgColors = ['#1a1a2e', '#16213e', '#0f3460']
+function goCode() {
+  router.push({ path: '/yecao-code' })
+}
 
-const menuItems = ref([
-  {
-    id: 'code',
-    icon: '🔑',
-    title: '口令安装',
-    desc: '输入4位口令快速安装应用',
-    path: '/yecao-code'
-  },
-  {
-    id: 'settings',
-    icon: '⚙️',
-    title: '设置',
-    desc: '服务器地址等配置',
-    path: '/yecao-settings'
-  }
-])
-
-function onMenuClick(item: any) {
-  if (item.path) {
-    router.push({ path: item.path })
-  }
+function goSettings() {
+  router.push({ path: '/yecao-settings' })
 }
 
 const onESCreate = () => {
@@ -75,46 +65,46 @@ defineExpose({ onESCreate, onBackPressed })
 </script>
 
 <style lang="scss" scoped>
-.yecao-home-root {
+.home-root {
   width: 1920px;
   height: 1080px;
+  background-color: #0f3460;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.yecao-home-header {
+.home-container {
   flex-direction: column;
   align-items: center;
-  margin-bottom: 60px;
 }
 
-.yecao-home-logo {
+.home-logo {
   width: 120px;
   height: 120px;
   margin-bottom: 20px;
 }
 
-.yecao-home-title {
+.home-title {
   color: #ffffff;
   margin-bottom: 10px;
 }
 
-.yecao-home-subtitle {
+.home-subtitle {
   color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 60px;
 }
 
-.yecao-home-menu {
+.home-menu {
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: center;
-  width: 1200px;
+  margin-bottom: 60px;
 }
 
-.yecao-menu-item {
+.menu-item {
   width: 280px;
   height: 220px;
-  margin: 15px;
+  margin: 0 20px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   flex-direction: column;
@@ -124,29 +114,21 @@ defineExpose({ onESCreate, onBackPressed })
   border-color: transparent;
 }
 
-.yecao-menu-icon {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 15px;
-}
-
-.yecao-menu-title {
+.menu-title {
   color: #ffffff;
+  margin-top: 15px;
   margin-bottom: 8px;
 }
 
-.yecao-menu-desc {
+.menu-desc {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.yecao-home-footer {
+.home-version {
+  color: rgba(255, 255, 255, 0.4);
   position: absolute;
   bottom: 30px;
   left: 0;
   right: 0;
-}
-
-.yecao-home-version {
-  color: rgba(255, 255, 255, 0.4);
 }
 </style>

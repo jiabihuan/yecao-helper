@@ -1,68 +1,79 @@
 <template>
-  <div class="yecao-code-root" :gradientBackground="{ colors: bgColors, orientation: 0 }">
-    <div class="yecao-code-header">
-      <qt-text class="yecao-code-title" text="口令安装" gravity="center" :fontSize="40" typeface="bold" />
-      <qt-text class="yecao-code-subtitle" text="请输入4位分享口令" gravity="center" :fontSize="26" />
-    </div>
+  <div class="code-root">
+    <div class="code-container">
+      <qt-text class="code-title" text="口令安装" gravity="center" :fontSize="40" typeface="bold" />
+      <qt-text class="code-subtitle" text="请输入4位分享口令" gravity="center" :fontSize="26" />
 
-    <div class="yecao-code-display">
-      <div
-        v-for="i in 4"
-        :key="i"
-        class="yecao-code-digit"
-        :class="{ active: currentIndex === i - 1, filled: codeInput[i - 1] }"
-      >
-        <qt-text
-          v-if="codeInput[i - 1]"
-          :text="codeInput[i - 1]"
-          gravity="center"
-          :fontSize="56"
-          typeface="bold"
-        />
-      </div>
-    </div>
-
-    <div class="yecao-code-keyboard">
-      <div class="yecao-keyboard-row" v-for="(row, rowIndex) in keyboardRows" :key="rowIndex">
+      <div class="code-display">
         <div
-          v-for="(key, keyIndex) in row"
-          :key="keyIndex"
-          class="yecao-keyboard-key"
-          :class="{ wide: key === 'del' || key === 'ok' }"
-          :focusable="true"
-          :focusScale="1.08"
-          @click="onKeyClick(key)"
+          v-for="i in 4"
+          :key="i"
+          class="code-digit"
+          :class="{ active: currentIndex === i - 1, filled: codeInput[i - 1] }"
         >
           <qt-text
-            v-if="key === 'del'"
-            text="⌫ 退格"
+            v-if="codeInput[i - 1]"
+            :text="codeInput[i - 1]"
             gravity="center"
-            :fontSize="28"
-          />
-          <qt-text
-            v-else-if="key === 'ok'"
-            text="确定 ✓"
-            gravity="center"
-            :fontSize="28"
-            typeface="bold"
-          />
-          <qt-text
-            v-else
-            :text="key"
-            gravity="center"
-            :fontSize="36"
+            :fontSize="56"
             typeface="bold"
           />
         </div>
       </div>
-    </div>
 
-    <div v-if="errorMsg" class="yecao-code-error">
-      <qt-text :text="errorMsg" gravity="center" :fontSize="26" />
-    </div>
+      <div class="code-keyboard">
+        <div class="keyboard-row" v-for="(row, rowIndex) in keyboardRows" :key="rowIndex">
+          <div
+            v-for="(key, keyIndex) in row"
+            :key="keyIndex"
+            class="keyboard-key"
+            :class="{ wide: key === 'del' || key === 'ok' }"
+            :focusable="true"
+            :focusScale="1.08"
+            @click="onKeyClick(key)"
+          >
+            <qt-text
+              v-if="key === 'del'"
+              text="⌫ 退格"
+              gravity="center"
+              :fontSize="28"
+            />
+            <qt-text
+              v-else-if="key === 'ok'"
+              text="确定 ✓"
+              gravity="center"
+              :fontSize="28"
+              typeface="bold"
+            />
+            <qt-text
+              v-else
+              :text="key"
+              gravity="center"
+              :fontSize="36"
+              typeface="bold"
+            />
+          </div>
+        </div>
+      </div>
 
-    <div v-if="loading" class="yecao-code-loading">
-      <qt-text text="验证中..." gravity="center" :fontSize="28" />
+      <div v-if="errorMsg" class="code-error">
+        <qt-text :text="errorMsg" gravity="center" :fontSize="26" />
+      </div>
+
+      <div v-if="loading" class="code-loading">
+        <qt-text text="验证中..." gravity="center" :fontSize="28" />
+      </div>
+      
+      <div class="code-back">
+        <div
+          class="back-btn"
+          :focusable="true"
+          :focusScale="1.05"
+          @click="goBack"
+        >
+          <qt-text text="← 返回首页" gravity="center" :fontSize="26" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -75,7 +86,6 @@ import { getFileInfo } from '../../api/yecao'
 defineOptions({ name: 'yecao-code' })
 
 const router = useESRouter()
-const bgColors = ['#1a1a2e', '#16213e', '#0f3460']
 
 const codeInput = ref<string[]>(['', '', '', ''])
 const currentIndex = ref(0)
@@ -161,6 +171,10 @@ function clearInput() {
   currentIndex.value = 0
 }
 
+function goBack() {
+  router.back()
+}
+
 const onESCreate = () => {
   console.log('口令输入页加载完成')
 }
@@ -174,36 +188,37 @@ defineExpose({ onESCreate, onBackPressed })
 </script>
 
 <style lang="scss" scoped>
-.yecao-code-root {
+.code-root {
   width: 1920px;
   height: 1080px;
+  background-color: #0f3460;
   flex-direction: column;
   align-items: center;
   padding-top: 60px;
 }
 
-.yecao-code-header {
+.code-container {
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40px;
 }
 
-.yecao-code-title {
+.code-title {
   color: #ffffff;
   margin-bottom: 10px;
 }
 
-.yecao-code-subtitle {
+.code-subtitle {
   color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 40px;
 }
 
-.yecao-code-display {
+.code-display {
   flex-direction: row;
   justify-content: center;
   margin-bottom: 50px;
 }
 
-.yecao-code-digit {
+.code-digit {
   width: 100px;
   height: 120px;
   margin: 0 12px;
@@ -213,7 +228,6 @@ defineExpose({ onESCreate, onBackPressed })
   border-color: rgba(255, 255, 255, 0.3);
   justify-content: center;
   align-items: center;
-  transition: all 0.2s ease;
   
   &.active {
     border-color: #667eea;
@@ -230,18 +244,18 @@ defineExpose({ onESCreate, onBackPressed })
   }
 }
 
-.yecao-code-keyboard {
+.code-keyboard {
   flex-direction: column;
   align-items: center;
 }
 
-.yecao-keyboard-row {
+.keyboard-row {
   flex-direction: row;
   justify-content: center;
   margin-bottom: 10px;
 }
 
-.yecao-keyboard-key {
+.keyboard-key {
   width: 90px;
   height: 70px;
   margin: 0 6px;
@@ -261,7 +275,7 @@ defineExpose({ onESCreate, onBackPressed })
   }
 }
 
-.yecao-code-error {
+.code-error {
   margin-top: 30px;
   padding: 15px 30px;
   background-color: rgba(239, 68, 68, 0.2);
@@ -272,11 +286,28 @@ defineExpose({ onESCreate, onBackPressed })
   }
 }
 
-.yecao-code-loading {
+.code-loading {
   margin-top: 30px;
   
   :deep(qt-text) {
     color: #667eea;
+  }
+}
+
+.code-back {
+  margin-top: 40px;
+}
+
+.back-btn {
+  width: 200px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  
+  :deep(qt-text) {
+    color: rgba(255, 255, 255, 0.8);
   }
 }
 </style>

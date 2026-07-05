@@ -90,6 +90,9 @@ function getUpload(req, res, next) {
     storage: storage,
     limits: { fileSize: maxSize },
     fileFilter: (req, file, cb) => {
+      try {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch(e) {}
       const ext = path.extname(file.originalname).toLowerCase();
       if (ext === '.apk') {
         cb(null, true);

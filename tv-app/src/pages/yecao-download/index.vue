@@ -1,31 +1,31 @@
 <template>
-  <div class="yecao-download-root" :gradientBackground="{ colors: bgColors, orientation: 0 }">
-    <div class="yecao-download-container">
-      <div class="yecao-download-icon">
+  <div class="download-root">
+    <div class="download-container">
+      <div class="download-icon">
         <qt-text :text="statusIcon" gravity="center" :fontSize="80" />
       </div>
       
-      <qt-text class="yecao-download-title" :text="statusText" gravity="center" :fontSize="36" typeface="bold" />
+      <qt-text class="download-title" :text="statusText" gravity="center" :fontSize="36" typeface="bold" />
       
-      <div class="yecao-download-fileinfo">
-        <qt-text class="yecao-download-filename" :text="fileName" gravity="center" :fontSize="28" />
-        <qt-text class="yecao-download-filesize" :text="fileSizeText" gravity="center" :fontSize="24" />
+      <div class="download-fileinfo">
+        <qt-text class="download-filename" :text="fileName" gravity="center" :fontSize="28" />
+        <qt-text class="download-filesize" :text="fileSizeText" gravity="center" :fontSize="24" />
       </div>
 
-      <div v-if="showProgress" class="yecao-download-progress-container">
-        <div class="yecao-download-progress-bar">
-          <div class="yecao-download-progress-fill" :style="{ width: progress + '%' }"></div>
+      <div v-if="showProgress" class="download-progress-container">
+        <div class="download-progress-bar">
+          <div class="download-progress-fill" :style="{ width: progress + '%' }"></div>
         </div>
-        <qt-text class="yecao-download-progress-text" :text="progress + '%" gravity="center" :fontSize="26" />
+        <qt-text class="download-progress-text" :text="progress + '%'" gravity="center" :fontSize="26" />
       </div>
 
-      <div class="yecao-download-status">
+      <div class="download-status">
         <qt-text :text="statusDetail" gravity="center" :fontSize="24" />
       </div>
 
-      <div v-if="showActions" class="yecao-download-actions">
+      <div v-if="showActions" class="download-actions">
         <div
-          class="yecao-download-btn yecao-btn-primary"
+          class="download-btn download-btn-primary"
           :focusable="true"
           :focusScale="1.05"
           @click="onPrimaryAction"
@@ -33,7 +33,7 @@
           <qt-text :text="primaryActionText" gravity="center" :fontSize="30" typeface="bold" />
         </div>
         <div
-          class="yecao-download-btn yecao-btn-secondary"
+          class="download-btn download-btn-secondary"
           :focusable="true"
           :focusScale="1.05"
           @click="onSecondaryAction"
@@ -46,14 +46,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useESRouter } from '@extscreen/es3-router'
 import { getDownloadUrl, formatFileSize } from '../../api/yecao'
 
 defineOptions({ name: 'yecao-download' })
 
 const router = useESRouter()
-const bgColors = ['#1a1a2e', '#16213e', '#0f3460']
 
 const code = ref('')
 const fileName = ref('')
@@ -188,15 +187,16 @@ defineExpose({ onESCreate, onBackPressed })
 </script>
 
 <style lang="scss" scoped>
-.yecao-download-root {
+.download-root {
   width: 1920px;
   height: 1080px;
+  background-color: #0f3460;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.yecao-download-container {
+.download-container {
   width: 600px;
   flex-direction: column;
   align-items: center;
@@ -205,7 +205,7 @@ defineExpose({ onESCreate, onBackPressed })
   border-radius: 24px;
 }
 
-.yecao-download-icon {
+.download-icon {
   width: 120px;
   height: 120px;
   margin-bottom: 25px;
@@ -213,35 +213,35 @@ defineExpose({ onESCreate, onBackPressed })
   align-items: center;
 }
 
-.yecao-download-title {
+.download-title {
   color: #ffffff;
   margin-bottom: 20px;
 }
 
-.yecao-download-fileinfo {
+.download-fileinfo {
   flex-direction: column;
   align-items: center;
   margin-bottom: 35px;
 }
 
-.yecao-download-filename {
+.download-filename {
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 8px;
   max-width: 500px;
 }
 
-.yecao-download-filesize {
+.download-filesize {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.yecao-download-progress-container {
+.download-progress-container {
   width: 100%;
   flex-direction: column;
   align-items: center;
   margin-bottom: 30px;
 }
 
-.yecao-download-progress-bar {
+.download-progress-bar {
   width: 100%;
   height: 12px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -250,18 +250,17 @@ defineExpose({ onESCreate, onBackPressed })
   margin-bottom: 12px;
 }
 
-.yecao-download-progress-fill {
+.download-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #667eea;
   border-radius: 6px;
-  transition: width 0.3s ease;
 }
 
-.yecao-download-progress-text {
+.download-progress-text {
   color: #667eea;
 }
 
-.yecao-download-status {
+.download-status {
   margin-bottom: 35px;
   
   :deep(qt-text) {
@@ -269,13 +268,13 @@ defineExpose({ onESCreate, onBackPressed })
   }
 }
 
-.yecao-download-actions {
+.download-actions {
   flex-direction: column;
   width: 100%;
   align-items: center;
 }
 
-.yecao-download-btn {
+.download-btn {
   width: 300px;
   height: 60px;
   border-radius: 12px;
@@ -284,15 +283,15 @@ defineExpose({ onESCreate, onBackPressed })
   margin-bottom: 15px;
 }
 
-.yecao-btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+.download-btn-primary {
+  background-color: #667eea;
   
   :deep(qt-text) {
     color: #ffffff;
   }
 }
 
-.yecao-btn-secondary {
+.download-btn-secondary {
   background-color: rgba(255, 255, 255, 0.1);
   
   :deep(qt-text) {
