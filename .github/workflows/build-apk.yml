@@ -19,15 +19,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
+      - name: Setup Gradle 8.5
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.5
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x tv-app/gradlew
+      - name: Check project structure
+        run: |
+          ls -la tv-app/
+          ls -la tv-app/app/
+          cat tv-app/settings.gradle
+          cat tv-app/build.gradle
+          cat tv-app/app/build.gradle
 
-      - name: Build with Gradle
+      - name: Build Debug APK
         working-directory: tv-app
-        run: ./gradlew assembleRelease --no-daemon
+        run: gradle assembleDebug --no-daemon --stacktrace 2>&1 | tail -150
 
       - name: Find APK files
         run: find tv-app -name "*.apk" -type f
@@ -47,5 +54,4 @@ jobs:
             提交信息: ${{ github.event.head_commit.message }}
             
             ### 下载
-            - **Release 版本**（推荐安装）：星河助手 release.apk
-            - **Debug 版本**（调试用）：星河助手 debug.apk
+            - **Debug 版本**：星河助手 debug.apk
