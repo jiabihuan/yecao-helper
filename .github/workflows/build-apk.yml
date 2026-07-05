@@ -19,43 +19,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          api-level: 34
-          build-tools: 34.0.0
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
+      - name: Grant execute permission for gradlew
+        run: chmod +x tv-app/gradlew
+
+      - name: Build with Gradle
         working-directory: tv-app
-        run: |
-          export ANDROID_HOME=$ANDROID_SDK_ROOT
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0:$PATH
-          
-          mkdir -p build/intermediates/aapt2
-          mkdir -p build/intermediates/apk
-          mkdir -p build/generated/source/r/debug
-          mkdir -p build/intermediates/classes
-          mkdir -p build/intermediates/dex
-          mkdir -p build/intermediates/unzipped
-          
-          aapt2 compile --dir app/src/main/res -o build/intermediates/aapt2/res.zip
-          aapt2 link -o build/intermediates/apk/app.apk --manifest app/src/main/AndroidManifest.xml -I $ANDROID_HOME/platforms/android-34/android.jar --java build/generated/source/r/debug -R build/intermediates/aapt2/res.zip --auto-add-overlay
-          
-          javac -d build/intermediates/classes --release 11 -cp "$ANDROID_HOME/platforms/android-34/android.jar:build/generated/source/r/debug" $(find app/src/main/java -name "*.java")
-          
-          d8 $(find build/intermediates/classes -name "*.class") --release --min-api 24 --output build/intermediates/dex
-          
-          unzip -o build/intermediates/apk/app.apk -d build/intermediates/unzipped
-          cp build/intermediates/dex/classes.dex build/intermediates/unzipped/
-          
-          cd build/intermediates/unzipped
-          zip -r ../app-final.apk .
-          cd ../..
-          
-          mkdir -p build/outputs/apk/debug
-          cp build/intermediates/app-final.apk build/outputs/apk/debug/星河助手.apk
-          zipalign -f 4 build/outputs/apk/debug/星河助手.apk build/outputs/apk/debug/星河助手-aligned.apk
-          mv build/outputs/apk/debug/星河助手-aligned.apk build/outputs/apk/debug/星河助手.apk
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Find APK files
         run: find tv-app -name "*.apk" -type f
@@ -65,6 +37,15 @@ jobs:
         with:
           tag: latest
           name: 星河助手最新版本
-          artifacts: "tv-app/build/outputs/apk/**/*.apk"
+          artifacts: "tv-app/app/build/outputs/apk/**/*.apk"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ## 星河助手 - 最新构建版本
+            
+            构建时间: ${{ github.event.head_commit.timestamp }}
+            提交信息: ${{ github.event.head_commit.message }}
+            
+            ### 下载
+            - **Release 版本**（推荐安装）：星河助手 release.apk
+            - **Debug 版本**（调试用）：星河助手 debug.apk
