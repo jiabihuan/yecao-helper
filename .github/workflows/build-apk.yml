@@ -25,28 +25,18 @@ jobs:
           gradle-version: 8.5
 
       - name: Install Android SDK
-        run: |
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/sdk.zip
-          unzip -q /tmp/sdk.zip -d /tmp/android-sdk
-          rm /tmp/sdk.zip
-          export ANDROID_HOME=/tmp/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 34
+          build-tools: 34.0.0
 
       - name: Build Debug APK
         working-directory: tv-app
-        run: |
-          export ANDROID_HOME=/tmp/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          gradle assembleDebug
+        run: gradle assembleDebug
 
       - name: Build Release APK
         working-directory: tv-app
-        run: |
-          export ANDROID_HOME=/tmp/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          gradle assembleRelease
+        run: gradle assembleRelease
         continue-on-error: true
 
       - name: Find APK files
