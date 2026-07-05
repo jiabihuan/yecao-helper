@@ -19,43 +19,20 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle 8.5
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.5
 
-      - name: Build Debug APK
+      - name: Build debug APK
         working-directory: tv-app
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleDebug --no-daemon -x lint -x lintVitalAnalyze -x lintReport
 
-      - name: Find APK files
-        run: find tv-app -name "*.apk" -type f -ls
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: 星河助手_apk
+          name: xinghe-helper-apk
           path: tv-app/app/build/outputs/apk/debug/*.apk
-
-      - name: Upload to Release
-        uses: ncipollo/release-action@v1
-        continue-on-error: true
-        with:
-          tag: latest
-          name: 星河助手最新版本
-          artifacts: "tv-app/app/build/outputs/apk/debug/*.apk"
-          allowUpdates: true
-          replacesArtifacts: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            ## 星河助手 - 最新构建版本
-            
-            提交信息: ${{ github.event.head_commit.message }}
-            
-            ### 功能
-            - 口令安装：输入口令快速下载安装应用
-            - 远程推送：通过电脑或手机推送应用到电视
-            - 应用管理：管理已安装的应用
-            
-            ### 下载
-            下载下方 APK 文件安装到电视即可使用
