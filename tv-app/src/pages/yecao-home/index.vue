@@ -2,7 +2,7 @@
   <div class="yecao-home-root" :gradientBackground="{ colors: bgColors, orientation: 0 }">
     <div class="yecao-home-header">
       <qt-text class="yecao-home-logo" text="🌿" gravity="center" :fontSize="80" />
-      <qt-text class="yecao-home-title" text="野草助手" gravity="center" :fontSize="48" typeface="bold" />
+      <qt-text class="yecao-home-title" text="星河助手" gravity="center" :fontSize="48" typeface="bold" />
       <qt-text class="yecao-home-subtitle" text="大屏应用安装专家" gravity="center" :fontSize="28" />
     </div>
 
@@ -78,7 +78,7 @@ function onMenuClick(item: any) {
 }
 
 const onESCreate = () => {
-  console.log('野草助手首页加载完成')
+  console.log('星河助手首页加载完成')
 }
 
 const onBackPressed = () => {

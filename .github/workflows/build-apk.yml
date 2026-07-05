@@ -83,14 +83,14 @@ jobs:
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: yecao-helper-debug
+          name: xinghe-helper-debug
           path: ${{ steps.find_apk.outputs.apk_debug }}
           if-no-files-found: warn
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: yecao-helper-release
+          name: xinghe-helper-release
           path: ${{ steps.find_apk.outputs.apk_release }}
           if-no-files-found: warn
 
@@ -101,14 +101,14 @@ jobs:
           tag_name: latest
           name: 最新版本 APK
           body: |
-            ## 野草助手 - 最新构建版本
+            ## 星河助手 - 最新构建版本
             
             构建时间: ${{ github.event.head_commit.timestamp }}
             提交信息: ${{ github.event.head_commit.message }}
             
             ### 下载
-            - **Release 版本**（推荐安装）：yecao-helper-release.apk
-            - **Debug 版本**（调试用）：yecao-helper-debug.apk
+            - **Release 版本**（推荐安装）：星河助手 release.apk
+            - **Debug 版本**（调试用）：星河助手 debug.apk
           files: |
             ${{ steps.find_apk.outputs.apk_debug }}
             ${{ steps.find_apk.outputs.apk_release }}

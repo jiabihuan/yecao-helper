@@ -31,7 +31,7 @@
       </div>
 
       <div class="yecao-settings-about">
-        <qt-text class="yecao-about-title" text="关于野草助手" gravity="center" :fontSize="26" typeface="bold" />
+        <qt-text class="yecao-about-title" text="关于星河助手" gravity="center" :fontSize="26" typeface="bold" />
         <qt-text class="yecao-about-text" text="版本 1.0.0" gravity="center" :fontSize="22" />
         <qt-text class="yecao-about-text" text="让大屏应用安装更简单" gravity="center" :fontSize="22" />
       </div>
@@ -54,14 +54,14 @@ const bgColors = ['#1a1a2e', '#16213e', '#0f3460']
 const serverUrl = ref('http://your-server-url.com')
 
 const onESCreate = () => {
-  const savedUrl = localStorage.getItem('yecao_server_url')
+  const savedUrl = localStorage.getItem('xinghe_server_url')
   if (savedUrl) {
     serverUrl.value = savedUrl
   }
 }
 
 function onSave() {
-  localStorage.setItem('yecao_server_url', serverUrl.value)
+  localStorage.setItem('xinghe_server_url', serverUrl.value)
   setBaseUrl(serverUrl.value)
   router.back()
 }

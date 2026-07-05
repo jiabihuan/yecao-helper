@@ -1,7 +1,7 @@
 {
-  "name": "yecao-helper-backend",
+  "name": "xinghe-helper-backend",
   "version": "1.0.0",
-  "description": "野草助手后端服务 - APK口令分享平台",
+  "description": "星河助手后端服务 - APK口令分享平台",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

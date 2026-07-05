@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>野草助手 - APK口令分享</title>
+    <title>星河助手 - APK口令分享</title>
     <style>
         * {
             margin: 0;
@@ -452,7 +452,7 @@
     <div class="container">
         <div class="header">
             <div class="logo">🌿</div>
-            <h1>野草助手</h1>
+            <h1>星河助手</h1>
             <p class="subtitle">APK 口令分享 · 电视安装更简单</p>
         </div>
 
@@ -553,19 +553,19 @@
             <div class="tips-title">💡 使用说明</div>
             <ul>
                 <li>上传 APK 文件，自动生成 4 位分享口令</li>
-                <li>在电视上打开野草助手，输入口令即可安装</li>
+                <li>在电视上打开星河助手，输入口令即可安装</li>
                 <li>文件保留 7 天，过期自动删除</li>
                 <li>请确保上传的 APK 文件来源可靠</li>
             </ul>
         </div>
 
         <div class="footer">
-            野草助手 · 让大屏应用安装更简单
+            星河助手 · 让大屏应用安装更简单
         </div>
     </div>
 
     <script>
-        let token = localStorage.getItem('yecao_token') || '';
+        let token = localStorage.getItem('xinghe_token') || '';
         let currentUser = null;
 
         function api(path, options = {}) {
@@ -603,7 +603,7 @@
                 if (data.success) {
                     token = data.token;
                     currentUser = data.user;
-                    localStorage.setItem('yecao_token', token);
+                    localStorage.setItem('xinghe_token', token);
                     showMain();
                     loadMyFiles();
                 } else {
@@ -631,7 +631,7 @@
                 if (data.success) {
                     token = data.token;
                     currentUser = data.user;
-                    localStorage.setItem('yecao_token', token);
+                    localStorage.setItem('xinghe_token', token);
                     showMain();
                     loadMyFiles();
                 } else {
@@ -643,7 +643,7 @@
         function logout() {
             token = '';
             currentUser = null;
-            localStorage.removeItem('yecao_token');
+            localStorage.removeItem('xinghe_token');
             document.getElementById('authSection').style.display = 'block';
             document.getElementById('mainSection').style.display = 'none';
         }
@@ -676,11 +676,11 @@
                     loadMyFiles();
                 } else {
                     token = '';
-                    localStorage.removeItem('yecao_token');
+                    localStorage.removeItem('xinghe_token');
                 }
             }).catch(() => {
                 token = '';
-                localStorage.removeItem('yecao_token');
+                localStorage.removeItem('xinghe_token');
             });
         }
 

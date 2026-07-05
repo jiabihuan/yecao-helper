@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>野草助手 - 管理后台</title>
+    <title>星河助手 - 管理后台</title>
     <style>
         * {
             margin: 0;
@@ -442,7 +442,7 @@
             <div class="login-header">
                 <div class="login-logo">👑</div>
                 <div class="login-title">管理后台</div>
-                <div class="login-subtitle">野草助手 · 管理员登录</div>
+                <div class="login-subtitle">星河助手 · 管理员登录</div>
             </div>
             <div class="form-group">
                 <label>用户名</label>
@@ -464,7 +464,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">🌿</div>
-                <div class="sidebar-title">野草助手</div>
+                <div class="sidebar-title">星河助手</div>
                 <div class="sidebar-subtitle">管理后台</div>
             </div>
             <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
@@ -633,7 +633,7 @@
     </div>
 
     <script>
-        let token = localStorage.getItem('yecao_token') || '';
+        let token = localStorage.getItem('xinghe_token') || '';
         let currentUser = null;
         let allInvites = [];
         let allUsers = [];
@@ -669,7 +669,7 @@
                     }
                     token = data.token;
                     currentUser = data.user;
-                    localStorage.setItem('yecao_token', token);
+                    localStorage.setItem('xinghe_token', token);
                     showAdmin();
                     loadAllData();
                 } else {
@@ -691,7 +691,7 @@
         function logout() {
             token = '';
             currentUser = null;
-            localStorage.removeItem('yecao_token');
+            localStorage.removeItem('xinghe_token');
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('adminPage').style.display = 'none';
         }
@@ -711,11 +711,11 @@
                     loadAllData();
                 } else {
                     token = '';
-                    localStorage.removeItem('yecao_token');
+                    localStorage.removeItem('xinghe_token');
                 }
             }).catch(() => {
                 token = '';
-                localStorage.removeItem('yecao_token');
+                localStorage.removeItem('xinghe_token');
             });
         }
 

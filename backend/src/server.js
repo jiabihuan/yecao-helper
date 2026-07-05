@@ -29,7 +29,7 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
-const JWT_SECRET = process.env.JWT_SECRET || 'yecao-helper-secret-key-2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'xinghe-helper-secret-key-2024';
 const DEFAULT_MAX_FILE_SIZE_MB = 100;
 const DEFAULT_EXPIRE_DAYS = parseInt(process.env.EXPIRE_DAYS) || 7;
 
@@ -381,7 +381,7 @@ app.delete('/api/admin/files/:id', authMiddleware, adminMiddleware, (req, res) =
 });
 
 app.listen(PORT, () => {
-  console.log(`🌿 野草助手后端服务已启动`);
+  console.log(`🌿 星河助手后端服务已启动`);
   console.log(`📍 服务地址: http://localhost:${PORT}`);
   console.log(`📂 上传目录: ${UPLOAD_DIR}`);
   console.log(`⏰ 过期时间: ${DEFAULT_EXPIRE_DAYS}天`);
