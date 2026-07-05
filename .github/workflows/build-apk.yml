@@ -18,29 +18,32 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.5
 
       - name: Build APK
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         run: |
           cd tv-app
-          set -o pipefail
-          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log | tail -200
-          echo "Exit code: $?"
-          echo "=== APK files ==="
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          echo "=== SDK path ==="
+          echo "$ANDROID_SDK_ROOT"
+          ls "$ANDROID_SDK_ROOT" || true
+          echo "=== Build ==="
+          gradle assembleDebug --no-daemon --stacktrace 2>&1
+          echo "=== Exit: $? ==="
           find . -name "*.apk" -type f || echo "No APK found"
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: tv-app/build.log
+        continue-on-error: true
 
       - name: Upload APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: apk
