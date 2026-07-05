@@ -26,25 +26,26 @@ jobs:
 
       - name: Build Debug APK
         working-directory: tv-app
-        run: gradle assembleDebug --no-daemon --info 2>&1 | tail -200
+        run: gradle assembleDebug --no-daemon
 
       - name: Find APK files
-        id: find_apk
-        run: |
-          APK_PATH=$(find tv-app -name "*.apk" -type f | head -1)
-          echo "APK_PATH=$APK_PATH"
-          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+        run: find tv-app -name "*.apk" -type f -ls
 
-      - name: Generate version tag
-        id: version
-        run: echo "tag=v1.0.0-$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 星河助手_apk
+          path: tv-app/app/build/outputs/apk/debug/*.apk
 
       - name: Upload to Release
         uses: ncipollo/release-action@v1
+        continue-on-error: true
         with:
-          tag: ${{ steps.version.outputs.tag }}
-          name: 星河助手 ${{ steps.version.outputs.tag }}
-          artifacts: ${{ steps.find_apk.outputs.apk_path }}
+          tag: latest
+          name: 星河助手最新版本
+          artifacts: "tv-app/app/build/outputs/apk/debug/*.apk"
+          allowUpdates: true
+          replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             ## 星河助手 - 最新构建版本
