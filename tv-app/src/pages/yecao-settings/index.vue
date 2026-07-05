@@ -51,7 +51,7 @@ const router = useESRouter()
 const localStorage = useESLocalStorage()
 const bgColors = ['#1a1a2e', '#16213e', '#0f3460']
 
-const serverUrl = ref('http://your-server-url.com')
+const serverUrl = ref('http://172.245.61.121:3000')
 
 const onESCreate = () => {
   const savedUrl = localStorage.getItem('xinghe_server_url')

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://your-server-url.com'
+const BASE_URL = 'http://172.245.61.121:3000'
 
 export const ApiConfig = {
   BASE_URL,
