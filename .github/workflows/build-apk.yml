@@ -29,24 +29,15 @@ jobs:
       - name: Build APK
         run: |
           cd tv-app
-          gradle assembleDebug --no-daemon --stacktrace > /tmp/build.log 2>&1
-          echo "Exit code: $?"
-          echo "=== Last 100 lines ==="
-          tail -100 /tmp/build.log
-          echo "=== APK files ==="
-          find . -name "*.apk" -type f || true
-        continue-on-error: true
-
-      - name: Upload build log
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: build-log
-          path: /tmp/build.log
+          echo "=== Starting Gradle build ==="
+          gradle assembleDebug --no-daemon 2>&1
+          echo "=== Exit code: $? ==="
+          echo "=== Looking for APK ==="
+          find . -name "*.apk" -type f -ls || echo "No APK found"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: always()
+        if: success()
         with:
-          name: apk
+          name: 星河助手
           path: tv-app/app/build/outputs/apk/debug/*.apk
