@@ -2,129 +2,54 @@ name: Build APK
 
 on:
   push:
-    branches: [ main, master ]
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build Android APK
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Setup Java JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
+      - name: Install Android SDK
         run: |
-          export ANDROID_HOME=$HOME/android-sdk
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/sdk.zip
+          unzip -q /tmp/sdk.zip -d /tmp/android-sdk
+          rm /tmp/sdk.zip
+          export ANDROID_HOME=/tmp/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          cd $ANDROID_HOME/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-          unzip -q cmdline-tools.zip
-          mv cmdline-tools latest
-          rm cmdline-tools.zip
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-31" "build-tools;31.0.0" "platform-tools"
-
-      - name: Install npm dependencies
-        working-directory: tv-app
-        run: npm install --legacy-peer-deps
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Grant execute permission for gradlew
-        working-directory: tv-app/android
+        working-directory: tv-app
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        working-directory: tv-app/android
+        working-directory: tv-app
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Verify assets
-        run: |
-          echo "=== Checking assets ==="
-          ls -la tv-app/android/app/build/assets/
-          echo "=== Checking rpk file ==="
-          find tv-app/android/app/build -name "*.rpk" -ls
-          echo "=== Checking config.json ==="
-          cat tv-app/android/app/build/assets/config.json || echo "config.json not found"
-
       - name: Build Release APK
-        working-directory: tv-app/android
+        working-directory: tv-app
         run: ./gradlew assembleRelease --stacktrace
         continue-on-error: true
 
       - name: Find APK files
-        id: find_apk
-        run: |
-          DEBUG_APK=$(find tv-app/android/app/build/outputs/apk -name "*debug*.apk" | head -1)
-          RELEASE_APK=$(find tv-app/android/app/build/outputs/apk -name "*release*.apk" | head -1)
-          echo "apk_debug=$DEBUG_APK" >> $GITHUB_OUTPUT
-          echo "apk_release=$RELEASE_APK" >> $GITHUB_OUTPUT
-          echo "Debug APK: $DEBUG_APK"
-          echo "Release APK: $RELEASE_APK"
+        run: find tv-app -name "*.apk" -type f
 
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
+      - name: Upload to Release
+        uses: ncipollo/release-action@v1
         with:
-          name: xinghe-helper-debug
-          path: ${{ steps.find_apk.outputs.apk_debug }}
-          if-no-files-found: warn
-
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: xinghe-helper-release
-          path: ${{ steps.find_apk.outputs.apk_release }}
-          if-no-files-found: warn
-
-      - name: Create Latest Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest
-          name: 最新版本 APK
-          body: |
-            ## 星河助手 - 最新构建版本
-            
-            构建时间: ${{ github.event.head_commit.timestamp }}
-            提交信息: ${{ github.event.head_commit.message }}
-            
-            ### 下载
-            - **Release 版本**（推荐安装）：星河助手 release.apk
-            - **Debug 版本**（调试用）：星河助手 debug.apk
-          files: |
-            ${{ steps.find_apk.outputs.apk_debug }}
-            ${{ steps.find_apk.outputs.apk_release }}
-          append_body: false
-          make_latest: true
-
-      - name: Create Tag Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            ${{ steps.find_apk.outputs.apk_debug }}
-            ${{ steps.find_apk.outputs.apk_release }}
-          generate_release_notes: true
+          tag: latest
+          name: 星河助手最新版本
+          artifacts: "tv-app/app/build/outputs/apk/**/*.apk"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}

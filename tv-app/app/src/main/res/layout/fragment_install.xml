@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/primary"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_install"
+        style="@style/TextTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/subtitle_install"
+        style="@style/TextSubtitle"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp">
+
+        <TextView
+            android:id="@+id/tvCode1"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:text=""
+            style="@style/CodeDigit"
+            android:focusable="true"
+            android:layout_marginRight="12dp" />
+
+        <TextView
+            android:id="@+id/tvCode2"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:text=""
+            style="@style/CodeDigit"
+            android:focusable="true"
+            android:layout_marginRight="12dp" />
+
+        <TextView
+            android:id="@+id/tvCode3"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:text=""
+            style="@style/CodeDigit"
+            android:focusable="true"
+            android:layout_marginRight="12dp" />
+
+        <TextView
+            android:id="@+id/tvCode4"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:text=""
+            style="@style/CodeDigit"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/errorLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="@drawable/error_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="24sp"
+            android:textColor="#f87171" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_verify"
+            android:textSize="26sp"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/key1"
+                android:text="1"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key2"
+                android:text="2"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key3"
+                android:text="3"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key4"
+                android:text="4"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key5"
+                android:text="5"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key6"
+                android:text="6"
+                style="@style/KeyboardKey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/key7"
+                android:text="7"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key8"
+                android:text="8"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key9"
+                android:text="9"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/key0"
+                android:text="0"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyA"
+                android:text="A"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyB"
+                android:text="B"
+                style="@style/KeyboardKey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/keyC"
+                android:text="C"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyD"
+                android:text="D"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyE"
+                android:text="E"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyF"
+                android:text="F"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyG"
+                android:text="G"
+                style="@style/KeyboardKey" />
+            <Button
+                android:id="@+id/keyH"
+                android:text="H"
+                style="@style/KeyboardKey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/keyDel"
+                android:text="@string/btn_del"
+                style="@style/KeyboardKeyWide" />
+            <Button
+                android:id="@+id/keyOk"
+                android:text="@string/btn_ok"
+                style="@style/KeyboardKeyWide"
+                android:background="@drawable/btn_primary" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
