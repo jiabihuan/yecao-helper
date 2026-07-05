@@ -29,32 +29,24 @@ jobs:
       - name: Build APK
         run: |
           cd tv-app
-          gradle assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon --stacktrace > /tmp/build.log 2>&1
+          echo "Exit code: $?"
+          echo "=== Last 100 lines ==="
+          tail -100 /tmp/build.log
+          echo "=== APK files ==="
+          find . -name "*.apk" -type f || true
+        continue-on-error: true
 
-      - name: Upload APK artifact
+      - name: Upload build log
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: 星河助手
-          path: tv-app/app/build/outputs/apk/debug/*.apk
+          name: build-log
+          path: /tmp/build.log
 
-      - name: Upload to Release
-        uses: ncipollo/release-action@v1
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          tag: latest
-          name: 星河助手 - 最新版本
-          artifacts: "tv-app/app/build/outputs/apk/debug/*.apk"
-          allowUpdates: true
-          replacesArtifacts: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            ## 星河助手
-            
-            纯原生Android TV应用，无需网络即可使用
-            
-            ### 功能
-            - 🔐 口令安装：输入6位口令快速安装应用
-            - 📡 远程推送：通过电脑或手机推送应用到电视
-            - 📱 应用管理：管理已安装的应用
-            
-            ### 安装说明
-            下载 APK 文件，通过 U 盘或文件管理器安装到电视/盒子
+          name: apk
+          path: tv-app/app/build/outputs/apk/debug/*.apk
