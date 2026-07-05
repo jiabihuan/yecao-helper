@@ -28,6 +28,16 @@ const routes = [
     component: () => import('./pages/yecao-settings/index.vue')
   },
   {
+    path: '/yecao-remote',
+    name: 'yecao-remote',
+    component: () => import('./pages/yecao-remote/index.vue')
+  },
+  {
+    path: '/yecao-manager',
+    name: 'yecao-manager',
+    component: () => import('./pages/yecao-manager/index.vue')
+  },
+  {
     path: '/error',
     name: 'error',
     component: home
