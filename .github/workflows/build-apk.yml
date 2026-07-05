@@ -24,34 +24,39 @@ jobs:
         with:
           gradle-version: 8.5
 
-      - name: Check project structure
-        run: |
-          ls -la tv-app/
-          ls -la tv-app/app/
-          cat tv-app/settings.gradle
-          cat tv-app/build.gradle
-          cat tv-app/app/build.gradle
-
       - name: Build Debug APK
         working-directory: tv-app
-        run: gradle assembleDebug --no-daemon --stacktrace 2>&1 | tail -150
+        run: gradle assembleDebug --no-daemon
 
       - name: Find APK files
-        run: find tv-app -name "*.apk" -type f
+        run: |
+          find tv-app -name "*.apk" -type f -ls
+          APK_PATH=$(find tv-app -name "*.apk" -type f | head -1)
+          echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
 
-      - name: Upload to Release
-        uses: ncipollo/release-action@v1
+      - name: Generate version tag
+        id: version
+        run: echo "tag=v1.0.0-$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
         with:
-          tag: latest
-          name: 星河助手最新版本
-          artifacts: "tv-app/app/build/outputs/apk/**/*.apk"
-          allowUpdates: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: 星河助手 ${{ steps.version.outputs.tag }}
+          files: ${{ env.APK_PATH }}
           body: |
             ## 星河助手 - 最新构建版本
             
             构建时间: ${{ github.event.head_commit.timestamp }}
             提交信息: ${{ github.event.head_commit.message }}
             
+            ### 功能
+            - 口令安装：输入口令快速下载安装应用
+            - 远程推送：通过电脑或手机推送应用到电视
+            - 应用管理：管理已安装的应用
+            
             ### 下载
-            - **Debug 版本**：星河助手 debug.apk
+            下载下方 APK 文件安装到电视即可使用
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
