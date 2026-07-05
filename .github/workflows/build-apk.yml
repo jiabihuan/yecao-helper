@@ -20,24 +20,98 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.5
+          api-level: 34
+          build-tools: 34.0.0
 
-      - name: Build APK
+      - name: Build APK (manual)
         run: |
-          cd tv-app
-          echo "=== Starting Gradle build ==="
-          gradle assembleDebug --no-daemon 2>&1
-          echo "=== Exit code: $? ==="
-          echo "=== Looking for APK ==="
-          find . -name "*.apk" -type f -ls || echo "No APK found"
+          PROJECT_DIR=tv-app
+          cd $PROJECT_DIR
+          
+          mkdir -p build/intermediates/aapt2
+          mkdir -p build/intermediates/apk
+          mkdir -p build/generated/source/r/debug
+          mkdir -p build/intermediates/classes
+          mkdir -p build/intermediates/dex
+          mkdir -p build/intermediates/unzipped
+          mkdir -p build/outputs/apk
+          
+          echo "=== Step 1: Compile resources ==="
+          aapt2 compile --dir app/src/main/res -o build/intermediates/aapt2/res.zip
+          
+          echo "=== Step 2: Link resources ==="
+          aapt2 link -o build/intermediates/apk/app.apk \
+            --manifest app/src/main/AndroidManifest.xml \
+            -I $ANDROID_HOME/platforms/android-34/android.jar \
+            --java build/generated/source/r/debug \
+            -R build/intermediates/aapt2/res.zip \
+            --auto-add-overlay
+          
+          echo "=== Step 3: Compile Java ==="
+          javac -d build/intermediates/classes \
+            -source 1.8 -target 1.8 \
+            -cp "$ANDROID_HOME/platforms/android-34/android.jar:build/generated/source/r/debug" \
+            $(find app/src/main/java -name "*.java")
+          
+          echo "=== Step 4: Convert to Dex ==="
+          d8 $(find build/intermediates/classes -name "*.class") \
+            --release --min-api 24 \
+            --output build/intermediates/dex
+          
+          echo "=== Step 5: Package APK ==="
+          unzip -o build/intermediates/apk/app.apk -d build/intermediates/unzipped
+          cp build/intermediates/dex/classes.dex build/intermediates/unzipped/
+          cd build/intermediates/unzipped
+          zip -r ../app-unsigned.apk .
+          cd ../../..
+          
+          echo "=== Step 6: Align APK ==="
+          zipalign -f 4 build/intermediates/app-unsigned.apk build/outputs/apk/星河助手.apk
+          
+          echo "=== Step 7: Sign APK ==="
+          keytool -genkeypair -keystore build/debug.keystore -alias debug \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Debug, OU=Debug, O=Debug, L=Debug, ST=Debug, C=CN"
+          
+          apksigner sign --ks build/debug.keystore --ks-key-alias debug \
+            --ks-pass pass:android --key-pass pass:android \
+            --out build/outputs/apk/星河助手-signed.apk \
+            build/outputs/apk/星河助手.apk
+          
+          mv build/outputs/apk/星河助手-signed.apk build/outputs/apk/星河助手.apk
+          
+          echo "=== Build complete ==="
+          ls -lh build/outputs/apk/
+          
+          echo "=== APK details ==="
+          aapt dump badging build/outputs/apk/星河助手.apk | head -20
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: success()
         with:
           name: 星河助手
-          path: tv-app/app/build/outputs/apk/debug/*.apk
+          path: tv-app/build/outputs/apk/*.apk
+
+      - name: Upload to Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          name: 星河助手 - 最新版本
+          artifacts: "tv-app/build/outputs/apk/*.apk"
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ## 星河助手
+            
+            纯原生Android TV应用，无需网络即可进入界面
+            
+            ### 功能
+            - 🔐 口令安装：输入6位口令快速安装应用
+            - 📡 远程推送：通过电脑或手机推送应用到电视
+            - 📱 应用管理：管理已安装的应用
+            
+            ### 安装说明
+            下载 APK 文件，通过 U 盘或文件管理器安装到电视/盒子
