@@ -53,10 +53,6 @@ jobs:
         working-directory: tv-app
         run: npm install --legacy-peer-deps
 
-      - name: Build web resources
-        working-directory: tv-app
-        run: npm run build
-
       - name: Grant execute permission for gradlew
         working-directory: tv-app/android
         run: chmod +x gradlew
@@ -64,6 +60,15 @@ jobs:
       - name: Build Debug APK
         working-directory: tv-app/android
         run: ./gradlew assembleDebug --stacktrace
+
+      - name: Verify assets
+        run: |
+          echo "=== Checking assets ==="
+          ls -la tv-app/android/app/build/assets/
+          echo "=== Checking rpk file ==="
+          find tv-app/android/app/build -name "*.rpk" -ls
+          echo "=== Checking config.json ==="
+          cat tv-app/android/app/build/assets/config.json || echo "config.json not found"
 
       - name: Build Release APK
         working-directory: tv-app/android

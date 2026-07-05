@@ -133,6 +133,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 // }
 
 task buildVue(type: Exec) {
+    workingDir "${project.rootDir.parentFile}"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         executable 'cmd'
         args '/c', 'npm', 'run', 'build'
